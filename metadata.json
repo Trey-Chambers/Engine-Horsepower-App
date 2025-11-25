@@ -1,0 +1,5 @@
+{
+  "name": "Blue Oval Build Estimator",
+  "description": "A React-based engine power estimator specifically for Ford architectures (Windsor, Cleveland, FE, 385, Modular), featuring accurate component logic and a digital dash UI.",
+  "requestFramePermissions": []
+}
