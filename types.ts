@@ -17,6 +17,17 @@ export interface PartSpec {
   torqueMod?: number; // Torque characteristic
   topEndMod?: number; // High RPM breathing
   desc?: string; // Short description for UI
+  // UI Display Stats
+  stats?: {
+    flow?: string;      // e.g. "250/190 cfm"
+    chamber?: string;   // e.g. "58cc"
+    vol?: string;       // e.g. "185cc"
+    valves?: string;    // e.g. "2.02/1.60"
+    duration?: string;  // e.g. "224/232 @ .050"
+    lift?: string;      // e.g. ".555/.565"
+    rpm?: string;       // e.g. "1500-6500"
+    type?: string;      // e.g. "Dual Plane"
+  };
 }
 
 export interface EngineSpec {

@@ -2,7 +2,7 @@ import { EngineFamily, PartSpec } from './types';
 
 // Displacements available per family (Cubic Inches)
 export const FAMILY_DISPLACEMENTS: Record<EngineFamily, number[]> = {
-  [EngineFamily.WINDSOR]: [289, 302, 331, 347, 351, 393, 408, 427], // Added 331/347 strokers
+  [EngineFamily.WINDSOR]: [289, 302, 331, 347, 351, 393, 408, 427],
   [EngineFamily.CLEVELAND]: [351, 393, 408],
   [EngineFamily.FE]: [390, 410, 427, 428, 445], 
   [EngineFamily.SERIES_385]: [429, 460, 514, 557],
@@ -52,12 +52,54 @@ interface PartsDatabase {
 export const FORD_PARTS_DB: PartsDatabase = {
   heads: {
     [EngineFamily.WINDSOR]: [
-      { id: 'w_stock_e7', name: 'Stock Iron (E7TE/E6SE)', family: EngineFamily.WINDSOR, flowModifier: 0.78, desc: 'Restrictive stock heads' },
-      { id: 'w_gt40p', name: 'Ford GT40 / GT40P', family: EngineFamily.WINDSOR, flowModifier: 0.88, desc: 'Factory upgrade from Explorer/Cobra' },
-      { id: 'w_afr165', name: 'AFR 165 Renegade', family: EngineFamily.WINDSOR, flowModifier: 1.05, desc: 'Excellent street head' },
-      { id: 'w_tfs11r', name: 'Trick Flow TW 11R 190', family: EngineFamily.WINDSOR, flowModifier: 1.12, desc: 'Twisted wedge design' },
-      { id: 'w_afr205', name: 'AFR 205 / 220', family: EngineFamily.WINDSOR, flowModifier: 1.20, desc: 'Race/Stroker application' },
-      { id: 'w_kaase', name: 'Kaase P-38 Canted', family: EngineFamily.WINDSOR, flowModifier: 1.28, desc: 'Exotic canted valve geometry' },
+      { 
+        id: 'w_stock_e7', name: 'Stock E7TE (Stock 5.0L)', family: EngineFamily.WINDSOR, flowModifier: 0.78, desc: 'Iron OEM',
+        stats: { flow: '155/110 cfm', chamber: '64cc', vol: '124cc', valves: '1.78/1.46' }
+      },
+      { 
+        id: 'w_stock_e7_port', name: 'Stock E7TE (Ported)', family: EngineFamily.WINDSOR, flowModifier: 0.85, desc: 'Iron OEM Ported',
+        stats: { flow: '217/175 cfm', chamber: '64cc', vol: '124cc+', valves: '1.90/1.60' }
+      },
+      { 
+        id: 'w_gt40', name: 'Ford GT40 (Cobra/Explorer)', family: EngineFamily.WINDSOR, flowModifier: 0.88, desc: 'Iron Upgrade',
+        stats: { flow: '192/128 cfm', chamber: '64cc', vol: '145cc', valves: '1.84/1.54' }
+      },
+      { 
+        id: 'w_gt40p', name: 'Ford GT40P (Explorer)', family: EngineFamily.WINDSOR, flowModifier: 0.90, desc: 'High Efficiency Iron',
+        stats: { flow: '196/139 cfm', chamber: '60cc', vol: '145cc', valves: '1.84/1.46' }
+      },
+      { 
+        id: 'w_x303', name: 'Ford Perf Turbo Swirl (X303)', family: EngineFamily.WINDSOR, flowModifier: 1.02, desc: 'Aluminum',
+        stats: { flow: '230/165 cfm', chamber: '64cc', vol: '160cc', valves: '1.94/1.54' }
+      },
+      { 
+        id: 'w_afr165', name: 'AFR Renegade 165', family: EngineFamily.WINDSOR, flowModifier: 1.08, desc: 'Street/Strip Aluminum',
+        stats: { flow: '250/205 cfm', chamber: '58cc', vol: '165cc', valves: '1.90/1.60' }
+      },
+      { 
+        id: 'w_tfs170', name: 'Trick Flow Twisted Wedge 170', family: EngineFamily.WINDSOR, flowModifier: 1.05, desc: 'Twisted Wedge Design',
+        stats: { flow: '245/185 cfm', chamber: '61cc', vol: '170cc', valves: '2.02/1.60' }
+      },
+      { 
+        id: 'w_afr185', name: 'AFR Renegade 185', family: EngineFamily.WINDSOR, flowModifier: 1.15, desc: 'High Performance',
+        stats: { flow: '275/215 cfm', chamber: '58cc', vol: '185cc', valves: '2.02/1.60' }
+      },
+      { 
+        id: 'w_afr_enforcer', name: 'AFR Enforcer 185', family: EngineFamily.WINDSOR, flowModifier: 1.12, desc: 'Budget As-Cast',
+        stats: { flow: '255/166 cfm', chamber: '64cc', vol: '185cc', valves: '2.02/1.60' }
+      },
+      { 
+        id: 'w_tfs192', name: 'Trick Flow High Port 192', family: EngineFamily.WINDSOR, flowModifier: 1.22, desc: 'Race/Stroker',
+        stats: { flow: '280/205 cfm', chamber: '64cc', vol: '192cc', valves: '2.02/1.60' }
+      },
+      { 
+        id: 'w_afr205', name: 'AFR Renegade 205', family: EngineFamily.WINDSOR, flowModifier: 1.28, desc: 'Competition CNC',
+        stats: { flow: '295/210 cfm', chamber: '58cc', vol: '205cc', valves: '2.08/1.60' }
+      },
+      { 
+        id: 'w_kaase', name: 'Kaase P-38 Canted', family: EngineFamily.WINDSOR, flowModifier: 1.35, desc: 'Exotic Geometry',
+        stats: { flow: '300+ cfm', chamber: '60cc', vol: '240cc', valves: 'Canted' }
+      },
     ],
     [EngineFamily.CLEVELAND]: [
       { id: 'c_2v_open', name: 'Factory 2V Open Chamber', family: EngineFamily.CLEVELAND, flowModifier: 0.90, desc: 'Good street potential' },
@@ -77,22 +119,76 @@ export const FORD_PARTS_DB: PartsDatabase = {
       { id: 'bb_kaase_p51', name: 'Kaase P-51', family: EngineFamily.SERIES_385, flowModifier: 1.35, desc: 'The king of big block heads' },
     ],
     [EngineFamily.MODULAR]: [
-      { id: 'mod_2v_pi', name: '4.6L 2V PI (Perf Improved)', family: EngineFamily.MODULAR, flowModifier: 0.85, desc: 'Standard 99-04 GT' },
-      { id: 'mod_3v', name: '4.6L 3V', family: EngineFamily.MODULAR, flowModifier: 0.92, desc: '05-10 GT' },
+      { 
+        id: 'mod_2v_pi', name: '4.6L 2V PI (Stock)', family: EngineFamily.MODULAR, flowModifier: 0.85, desc: 'OEM 99-04',
+        stats: { flow: '160/115 cfm', chamber: '42cc', valves: '1.75/1.42', vol: 'PI' }
+      },
+      { 
+        id: 'mod_tfs_185', name: 'Trick Flow TW 185 (2V)', family: EngineFamily.MODULAR, flowModifier: 1.08, desc: 'Top 2V Upgrade',
+        stats: { flow: '240/190 cfm', chamber: '38cc', valves: '1.84/1.45', vol: '185cc' }
+      },
+      { id: 'mod_3v', name: '4.6L 3V Stock', family: EngineFamily.MODULAR, flowModifier: 0.92, desc: '05-10 GT' },
       { id: 'mod_4v_b', name: '4.6L 4V B-Head', family: EngineFamily.MODULAR, flowModifier: 1.05, desc: '96-98 Cobra high rpm' },
-      { id: 'coyote_1', name: 'Coyote Gen 1 Stock', family: EngineFamily.MODULAR, flowModifier: 1.15, desc: '11-14 GT' },
-      { id: 'coyote_2', name: 'Coyote Gen 2 Stock', family: EngineFamily.MODULAR, flowModifier: 1.20, desc: '15-17 GT (Better valves)' },
-      { id: 'coyote_3', name: 'Coyote Gen 3 / Voodoo', family: EngineFamily.MODULAR, flowModifier: 1.28, desc: 'Direct Injection / GT350' },
+      { 
+        id: 'coyote_1', name: 'Coyote Gen 1 (11-14)', family: EngineFamily.MODULAR, flowModifier: 1.15, desc: 'Stock GT',
+        stats: { flow: '285/195 cfm', chamber: '57cc', valves: '37mm/31.8mm' }
+      },
+      { 
+        id: 'coyote_3', name: 'Coyote Gen 3 (18+)', family: EngineFamily.MODULAR, flowModifier: 1.25, desc: 'Direct Injection',
+        stats: { flow: '295/205 cfm', chamber: '55cc', valves: '37.7mm/32mm' }
+      },
+      { 
+        id: 'voodoo', name: '5.2L Voodoo (GT350)', family: EngineFamily.MODULAR, flowModifier: 1.32, desc: 'CNC Ported',
+        stats: { flow: '310/210 cfm', chamber: '57cc', valves: '38.3mm/32.5mm' }
+      },
     ]
   },
   cams: {
     [EngineFamily.WINDSOR]: [
-      { id: 'w_stock_ho', name: 'Stock 5.0L HO', family: EngineFamily.WINDSOR, rpmAdder: 4800, veAdder: 0.0, desc: 'Smooth idle' },
-      { id: 'w_e303', name: 'Ford Letter E303', family: EngineFamily.WINDSOR, rpmAdder: 5500, veAdder: 0.05, desc: 'The classic alphabet cam' },
-      { id: 'w_b303', name: 'Ford Letter B303', family: EngineFamily.WINDSOR, rpmAdder: 5800, veAdder: 0.06, desc: 'Lopey idle, older design' },
-      { id: 'w_tfs1', name: 'Trick Flow Stage 1', family: EngineFamily.WINDSOR, rpmAdder: 5700, veAdder: 0.07, desc: 'Modern split duration' },
-      { id: 'w_anderson_n41', name: 'Anderson Ford N-41', family: EngineFamily.WINDSOR, rpmAdder: 6200, veAdder: 0.09, desc: 'Famous NA powerhouse' },
-      { id: 'w_xe274', name: 'Comp XE274HR', family: EngineFamily.WINDSOR, rpmAdder: 6000, veAdder: 0.08, desc: 'Aggressive street hydraulic' },
+      { 
+        id: 'w_stock_ho', name: 'Stock 5.0L HO', family: EngineFamily.WINDSOR, rpmAdder: 4800, veAdder: 0.0, desc: 'Smooth Idle',
+        stats: { duration: '210/210', lift: '.444/.444', rpm: '1500-4800' }
+      },
+      { 
+        id: 'w_e303', name: 'Ford Letter E303', family: EngineFamily.WINDSOR, rpmAdder: 5500, veAdder: 0.05, desc: 'Performance Street',
+        stats: { duration: '220/220', lift: '.498/.498', rpm: '2500-5500' }
+      },
+      { 
+        id: 'w_b303', name: 'Ford Letter B303', family: EngineFamily.WINDSOR, rpmAdder: 5800, veAdder: 0.06, desc: 'Lopey Idle',
+        stats: { duration: '224/224', lift: '.480/.480', rpm: '3000-6000' }
+      },
+      { 
+        id: 'w_f303', name: 'Ford Letter F303', family: EngineFamily.WINDSOR, rpmAdder: 6200, veAdder: 0.07, desc: 'Mid-Range',
+        stats: { duration: '226/226', lift: '.512/.512', rpm: '3500-6200' }
+      },
+      { 
+        id: 'w_x303_cam', name: 'Ford Letter X303', family: EngineFamily.WINDSOR, rpmAdder: 6400, veAdder: 0.08, desc: 'Aggressive',
+        stats: { duration: '224/224', lift: '.542/.542', rpm: '2200-6200' }
+      },
+      { 
+        id: 'w_xe264', name: 'Comp XE264HR', family: EngineFamily.WINDSOR, rpmAdder: 5400, veAdder: 0.04, desc: 'Towing/Mild',
+        stats: { duration: '212/218', lift: '.512/.512', rpm: '1500-5500' }
+      },
+      { 
+        id: 'w_xe268', name: 'Comp XE268H', family: EngineFamily.WINDSOR, rpmAdder: 5800, veAdder: 0.06, desc: 'Flat Tappet',
+        stats: { duration: '224/230', lift: '.509/.512', rpm: '1600-5800' }
+      },
+      { 
+        id: 'w_xe274', name: 'Comp XE274HR', family: EngineFamily.WINDSOR, rpmAdder: 6000, veAdder: 0.08, desc: 'Hot Street',
+        stats: { duration: '224/232', lift: '.555/.565', rpm: '2200-6000' }
+      },
+      { 
+        id: 'w_xe284', name: 'Comp XE284HR', family: EngineFamily.WINDSOR, rpmAdder: 6500, veAdder: 0.10, desc: 'Pro Street',
+        stats: { duration: '224/230', lift: '.533/.544', rpm: '2000-6000' }
+      },
+      { 
+        id: 'w_tfs1', name: 'Trick Flow Stage 1', family: EngineFamily.WINDSOR, rpmAdder: 5700, veAdder: 0.07, desc: 'Proven Power',
+        stats: { duration: '221/225', lift: '.499/.510', rpm: '2000-5500' }
+      },
+      { 
+        id: 'w_anderson_n41', name: 'Anderson Ford N-41', family: EngineFamily.WINDSOR, rpmAdder: 6400, veAdder: 0.11, desc: 'NA Legend',
+        stats: { duration: '228/236', lift: '.576/.576', rpm: '2600-6600' }
+      },
     ],
     [EngineFamily.CLEVELAND]: [
       { id: 'c_stock', name: 'Stock Hydraulic', family: EngineFamily.CLEVELAND, rpmAdder: 5000, veAdder: 0.0, desc: 'Smooth' },
@@ -110,19 +206,62 @@ export const FORD_PARTS_DB: PartsDatabase = {
       { id: 'bb_comp_xe', name: 'Comp Xtreme Energy 4x4', family: EngineFamily.SERIES_385, rpmAdder: 5400, veAdder: 0.06, desc: 'Modern fast ramp' },
     ],
     [EngineFamily.MODULAR]: [
-      { id: 'mod_stock', name: 'Stock Cams', family: EngineFamily.MODULAR, rpmAdder: 6000, veAdder: 0.0, desc: 'Factory smooth' },
-      { id: 'mod_fp_stage2', name: 'Ford Performance Stage 2', family: EngineFamily.MODULAR, rpmAdder: 6800, veAdder: 0.06, desc: 'Hot street' },
-      { id: 'mod_comp_stg3', name: 'Comp Stage 3 (Locked VCT)', family: EngineFamily.MODULAR, rpmAdder: 7400, veAdder: 0.10, desc: 'Race only' },
-      { id: 'mod_ghost', name: 'Ghost Cam Tune', family: EngineFamily.MODULAR, rpmAdder: 6000, veAdder: -0.01, desc: 'Sound only, no gain' },
+      { 
+        id: 'mod_stock', name: 'Stock Cams (PI)', family: EngineFamily.MODULAR, rpmAdder: 6000, veAdder: 0.0, desc: 'Factory',
+        stats: { duration: '200/210', lift: '.505/.535', rpm: 'Idle-5800' }
+      },
+      { 
+        id: 'mod_xe270', name: 'Comp XE270AH (2V)', family: EngineFamily.MODULAR, rpmAdder: 6200, veAdder: 0.07, desc: 'Hot Street 2V',
+        stats: { duration: '234/238', lift: '.550/.550', rpm: '2000-6200' }
+      },
+      { 
+        id: 'coy_stock', name: 'Coyote Stock', family: EngineFamily.MODULAR, rpmAdder: 7000, veAdder: 0.08, desc: 'Gen 1',
+        stats: { duration: '211/211', lift: '.472/.433', rpm: 'Idle-7000' }
+      },
+      { 
+        id: 'coy_comp_cr', name: 'Comp CR Series 235', family: EngineFamily.MODULAR, rpmAdder: 7600, veAdder: 0.12, desc: 'Gen 1/2 Race',
+        stats: { duration: '235/237', lift: '.516/.516', rpm: '2000-7600' }
+      },
+      { 
+        id: 'voodoo_cam', name: 'Gen 2 Perf (Voodoo Spec)', family: EngineFamily.MODULAR, rpmAdder: 8250, veAdder: 0.15, desc: 'Max Effort',
+        stats: { duration: '270/270', lift: '.551/.551', rpm: '3500-8250' }
+      },
     ]
   },
   intakes: {
     [EngineFamily.WINDSOR]: [
-      { id: 'w_stock_efi', name: 'Stock 5.0L EFI Manifold', family: EngineFamily.WINDSOR, topEndMod: 0.85, torqueMod: 1.05, desc: 'Great low end, chokes at 5k' },
-      { id: 'w_explorer', name: 'Explorer / Cobra Intake', family: EngineFamily.WINDSOR, topEndMod: 0.95, torqueMod: 1.05, desc: 'Best budget upgrade' },
-      { id: 'w_perf_rpm', name: 'Edelbrock Performer RPM', family: EngineFamily.WINDSOR, topEndMod: 1.0, torqueMod: 1.10, desc: 'Dual plane standard' },
-      { id: 'w_vic_jr', name: 'Edelbrock Victor Jr', family: EngineFamily.WINDSOR, topEndMod: 1.15, torqueMod: 0.90, desc: 'Single plane carb' },
-      { id: 'w_tfs_r', name: 'Trick Flow R-Series Box', family: EngineFamily.WINDSOR, topEndMod: 1.18, torqueMod: 0.95, desc: 'High RPM EFI' },
+      { 
+        id: 'w_stock_efi', name: 'Stock 5.0L EFI', family: EngineFamily.WINDSOR, topEndMod: 0.85, torqueMod: 1.05, desc: 'Long Runner',
+        stats: { type: 'EFI Long Runner', rpm: 'Idle-5500' }
+      },
+      { 
+        id: 'w_explorer', name: 'Explorer / Cobra EFI', family: EngineFamily.WINDSOR, topEndMod: 0.95, torqueMod: 1.05, desc: 'Budget Upgrade',
+        stats: { type: 'EFI Long Runner', rpm: 'Idle-5800' }
+      },
+      { 
+        id: 'w_perf_289', name: 'Edelbrock Performer 289', family: EngineFamily.WINDSOR, topEndMod: 0.92, torqueMod: 1.08, desc: 'Stock Replacement',
+        stats: { type: 'Dual Plane', rpm: 'Idle-5500' }
+      },
+      { 
+        id: 'w_perf_rpm', name: 'Edelbrock Performer RPM', family: EngineFamily.WINDSOR, topEndMod: 1.0, torqueMod: 1.10, desc: 'Street/Strip',
+        stats: { type: 'Dual Plane', rpm: '1500-6500' }
+      },
+      { 
+        id: 'w_airgap', name: 'Edelbrock RPM Air-Gap', family: EngineFamily.WINDSOR, topEndMod: 1.05, torqueMod: 1.12, desc: 'Cooler Charge',
+        stats: { type: 'Air-Gap Dual Plane', rpm: '1500-6500' }
+      },
+      { 
+        id: 'w_systemax', name: 'Holley Systemax II', family: EngineFamily.WINDSOR, topEndMod: 1.12, torqueMod: 1.0, desc: 'EFI Performance',
+        stats: { type: 'EFI Long Runner', rpm: '2000-6500' }
+      },
+      { 
+        id: 'w_vic_jr', name: 'Edelbrock Victor Jr', family: EngineFamily.WINDSOR, topEndMod: 1.20, torqueMod: 0.90, desc: 'High RPM Race',
+        stats: { type: 'Single Plane', rpm: '3500-7500' }
+      },
+      { 
+        id: 'w_tfs_box', name: 'Trick Flow Street Burner', family: EngineFamily.WINDSOR, topEndMod: 1.02, torqueMod: 1.05, desc: 'Box Style',
+        stats: { type: 'EFI Box', rpm: '1500-6000' }
+      },
     ],
     [EngineFamily.CLEVELAND]: [
       { id: 'c_stock_iron', name: 'Stock Iron 4V', family: EngineFamily.CLEVELAND, topEndMod: 1.0, torqueMod: 1.0, desc: 'Heavy but flows' },
@@ -140,10 +279,26 @@ export const FORD_PARTS_DB: PartsDatabase = {
       { id: 'bb_vic_460', name: 'Edelbrock Victor 460', family: EngineFamily.SERIES_385, topEndMod: 1.18, torqueMod: 0.90, desc: 'Race single plane' },
     ],
     [EngineFamily.MODULAR]: [
-      { id: 'mod_stock', name: 'Stock Composite', family: EngineFamily.MODULAR, topEndMod: 0.95, torqueMod: 1.05, desc: 'Long runners' },
-      { id: 'mod_boss', name: 'Boss 302 Intake', family: EngineFamily.MODULAR, topEndMod: 1.15, torqueMod: 0.95, desc: 'Short runner high RPM' },
-      { id: 'mod_cj', name: 'Cobra Jet', family: EngineFamily.MODULAR, topEndMod: 1.20, torqueMod: 0.92, desc: 'High volume, high RPM' },
-      { id: 'mod_sniper', name: 'Holley Sniper / Hi-Ram', family: EngineFamily.MODULAR, topEndMod: 1.25, torqueMod: 0.85, desc: 'Sheet metal style' },
+      { 
+        id: 'mod_stock', name: 'Stock Gen 2/3 Composite', family: EngineFamily.MODULAR, topEndMod: 0.95, torqueMod: 1.05, desc: 'Long Runner',
+        stats: { type: 'Long Runner', rpm: 'Idle-7000' }
+      },
+      { 
+        id: 'mod_boss', name: 'Ford Boss 302', family: EngineFamily.MODULAR, topEndMod: 1.15, torqueMod: 0.95, desc: 'Track Day',
+        stats: { type: 'Short Runner', rpm: '3500-7800' }
+      },
+      { 
+        id: 'mod_cj', name: 'Ford Cobra Jet', family: EngineFamily.MODULAR, topEndMod: 1.20, torqueMod: 0.92, desc: 'Drag Race',
+        stats: { type: 'Short Runner', rpm: '3500-8000' }
+      },
+      { 
+        id: 'mod_gt350', name: 'Ford GT350', family: EngineFamily.MODULAR, topEndMod: 1.18, torqueMod: 0.98, desc: 'Balanced',
+        stats: { type: 'Mid Runner', rpm: '3000-7500' }
+      },
+      { 
+        id: 'mod_sniper', name: 'Holley Sniper / Hi-Ram', family: EngineFamily.MODULAR, topEndMod: 1.25, torqueMod: 0.85, desc: 'Boost/Race',
+        stats: { type: 'Sheet Metal', rpm: '2200-8200' }
+      },
     ]
   }
 };

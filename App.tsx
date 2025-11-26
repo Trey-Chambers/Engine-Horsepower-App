@@ -12,7 +12,7 @@ import {
 import { calculateEnginePower } from './services/engineMath';
 import { Gauge } from './components/Gauge';
 import { DynoChart } from './components/DynoChart';
-import { Settings, Info, Gauge as GaugeIcon, AlertTriangle, Wind, ChevronRight, Activity } from 'lucide-react';
+import { Settings, Info, Gauge as GaugeIcon, AlertTriangle, Wind, ChevronRight, Activity, Copy, Camera, RotateCcw } from 'lucide-react';
 
 const App: React.FC = () => {
   // Default State: A classic 5.0 Mustang setup
@@ -28,6 +28,7 @@ const App: React.FC = () => {
   });
 
   const [results, setResults] = useState<CalculationResult | null>(null);
+  const [compareResults, setCompareResults] = useState<CalculationResult | null>(null);
 
   // Calculate whenever spec changes
   useEffect(() => {
@@ -39,8 +40,6 @@ const App: React.FC = () => {
   const handleFamilyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newFamily = e.target.value as EngineFamily;
     
-    // Reset parts to the default (first option) for the new family
-    // to avoid carrying over incompatible IDs
     const defaultHeads = FORD_PARTS_DB.heads[newFamily][0].id;
     const defaultCam = FORD_PARTS_DB.cams[newFamily][0].id;
     const defaultIntake = FORD_PARTS_DB.intakes[newFamily][0].id;
@@ -53,7 +52,57 @@ const App: React.FC = () => {
       camId: defaultCam,
       intakeId: defaultIntake
     }));
+    setCompareResults(null); // Clear comparison when changing platform
   };
+
+  const copyBuildToClipboard = () => {
+    if (!results) return;
+    const text = `
+BLUE OVAL BUILD ESTIMATOR
+-------------------------
+Platform: ${spec.family}
+Displacement: ${spec.displacementCI}ci
+Heads: ${FORD_PARTS_DB.heads[spec.family].find(h => h.id === spec.headId)?.name}
+Cam: ${FORD_PARTS_DB.cams[spec.family].find(c => c.id === spec.camId)?.name}
+Intake: ${FORD_PARTS_DB.intakes[spec.family].find(i => i.id === spec.intakeId)?.name}
+Induction: ${spec.forcedInductionPsi > 0 ? `${spec.forcedInductionPsi}psi Boost` : 'Naturally Aspirated'}
+Compression: ${spec.compressionRatio}:1
+
+ESTIMATED RESULTS
+-----------------
+Peak HP: ${results.peakHP} @ ${results.peakHPRPM} RPM
+Peak TQ: ${results.peakTorque} @ ${results.peakTorqueRPM} RPM
+Wheel HP: ${results.wheelHP} (${spec.transmission})
+    `.trim();
+    navigator.clipboard.writeText(text);
+    alert("Build sheet copied to clipboard!");
+  };
+
+  const toggleSnapshot = () => {
+    if (compareResults) {
+      setCompareResults(null);
+    } else {
+      setCompareResults(results);
+    }
+  };
+
+  // Helper to render spec badges
+  const renderSpecBadges = (stats?: Record<string, string>) => {
+    if (!stats) return null;
+    return (
+      <div className="flex flex-wrap gap-2 mt-2 px-1">
+        {Object.entries(stats).map(([key, val]) => (
+          <span key={key} className="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-gray-800 rounded text-gray-400 border border-gray-700">
+            {key}: <span className="text-gray-200">{val}</span>
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  const selectedHead = FORD_PARTS_DB.heads[spec.family].find(p => p.id === spec.headId);
+  const selectedCam = FORD_PARTS_DB.cams[spec.family].find(p => p.id === spec.camId);
+  const selectedIntake = FORD_PARTS_DB.intakes[spec.family].find(p => p.id === spec.intakeId);
 
   return (
     <div className="min-h-screen bg-[#050505] text-gray-200 font-sans selection:bg-ford-blue selection:text-white pb-20">
@@ -69,10 +118,13 @@ const App: React.FC = () => {
               <p className="text-xs text-ford-performance font-semibold tracking-wider">Build Estimator</p>
             </div>
           </div>
-          <div className="hidden md:flex items-center gap-2 text-xs font-tech text-gray-500">
-            <span>EST. 2024</span>
-            <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
-            <span>BUILD v2.0</span>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={copyBuildToClipboard}
+              className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded text-xs font-bold text-gray-300 transition-colors border border-gray-700"
+            >
+              <Copy className="w-3 h-3" /> COPY BUILD
+            </button>
           </div>
         </div>
       </header>
@@ -82,12 +134,19 @@ const App: React.FC = () => {
         {/* Left Column: Input Controls */}
         <section className="lg:col-span-4 space-y-6">
           <div className="bg-[#0f172a] border border-gray-800 rounded-xl p-6 shadow-2xl">
-            <div className="flex items-center gap-2 mb-6 text-ford-performance">
-              <Settings className="w-5 h-5" />
-              <h2 className="font-tech text-lg uppercase tracking-wide">Configuration</h2>
+            <div className="flex items-center justify-between mb-6 text-ford-performance">
+              <div className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                <h2 className="font-tech text-lg uppercase tracking-wide">Configuration</h2>
+              </div>
+              {compareResults && (
+                <span className="text-xs bg-yellow-900/30 text-yellow-500 px-2 py-1 rounded border border-yellow-800/50 animate-pulse">
+                  COMPARING
+                </span>
+              )}
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-6">
               {/* Engine Family */}
               <div className="space-y-2">
                 <label className="text-xs uppercase text-gray-500 font-bold tracking-wider">Engine Architecture</label>
@@ -117,7 +176,7 @@ const App: React.FC = () => {
               </div>
 
               {/* Heads */}
-              <div className="space-y-2">
+              <div className="space-y-2 group">
                 <label className="text-xs uppercase text-gray-500 font-bold tracking-wider">Cylinder Heads</label>
                 <select 
                   className="w-full bg-[#050505] border border-gray-700 rounded-md px-3 py-3 text-sm focus:border-ford-performance focus:ring-1 focus:ring-ford-performance focus:outline-none transition-colors"
@@ -128,9 +187,10 @@ const App: React.FC = () => {
                     <option key={part.id} value={part.id}>{part.name}</option>
                   ))}
                 </select>
-                <p className="text-[10px] text-gray-500 px-1">
-                  {FORD_PARTS_DB.heads[spec.family].find(p => p.id === spec.headId)?.desc}
-                </p>
+                <div className="pt-1">
+                  <p className="text-[10px] text-gray-500 px-1">{selectedHead?.desc}</p>
+                  {renderSpecBadges(selectedHead?.stats)}
+                </div>
               </div>
 
               {/* Camshaft */}
@@ -145,9 +205,10 @@ const App: React.FC = () => {
                     <option key={part.id} value={part.id}>{part.name}</option>
                   ))}
                 </select>
-                <p className="text-[10px] text-gray-500 px-1">
-                  {FORD_PARTS_DB.cams[spec.family].find(p => p.id === spec.camId)?.desc}
-                </p>
+                 <div className="pt-1">
+                  <p className="text-[10px] text-gray-500 px-1">{selectedCam?.desc}</p>
+                  {renderSpecBadges(selectedCam?.stats)}
+                </div>
               </div>
 
               {/* Induction */}
@@ -162,9 +223,10 @@ const App: React.FC = () => {
                     <option key={part.id} value={part.id}>{part.name}</option>
                   ))}
                 </select>
-                <p className="text-[10px] text-gray-500 px-1">
-                  {FORD_PARTS_DB.intakes[spec.family].find(p => p.id === spec.intakeId)?.desc}
-                </p>
+                 <div className="pt-1">
+                  <p className="text-[10px] text-gray-500 px-1">{selectedIntake?.desc}</p>
+                  {renderSpecBadges(selectedIntake?.stats)}
+                </div>
               </div>
 
               {/* Compression Ratio */}
@@ -215,13 +277,13 @@ const App: React.FC = () => {
                     className={`px-3 py-2 rounded border text-sm font-medium transition-all ${spec.transmission === 'Manual' ? 'bg-ford-blue border-ford-blue text-white' : 'bg-transparent border-gray-700 text-gray-400 hover:border-gray-500'}`}
                     onClick={() => setSpec({...spec, transmission: 'Manual'})}
                   >
-                    Manual (T5/Toploader)
+                    Manual
                   </button>
                   <button 
                      className={`px-3 py-2 rounded border text-sm font-medium transition-all ${spec.transmission === 'Auto' ? 'bg-ford-blue border-ford-blue text-white' : 'bg-transparent border-gray-700 text-gray-400 hover:border-gray-500'}`}
                      onClick={() => setSpec({...spec, transmission: 'Auto'})}
                   >
-                    Auto (C4/C6/AOD)
+                    Auto
                   </button>
                 </div>
               </div>
@@ -283,7 +345,18 @@ const App: React.FC = () => {
           </div>
 
           {/* Dyno Chart */}
-          {results && <DynoChart data={results} />}
+          <div className="relative">
+            {results && <DynoChart data={results} compareData={compareResults} />}
+            <div className="absolute top-6 right-6 flex gap-2">
+               <button 
+                  onClick={toggleSnapshot}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold transition-colors border ${compareResults ? 'bg-yellow-900/20 text-yellow-500 border-yellow-700/50' : 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700'}`}
+               >
+                  {compareResults ? <RotateCcw className="w-3 h-3" /> : <Camera className="w-3 h-3" />}
+                  {compareResults ? 'CLEAR GHOST' : 'SNAPSHOT'}
+               </button>
+            </div>
+          </div>
 
           {/* Messages & Warnings */}
           {results && results.messages.length > 0 && (
@@ -307,10 +380,10 @@ const App: React.FC = () => {
           <div className="bg-ford-blue/10 border border-ford-blue/30 rounded-lg p-4 flex items-start gap-4">
             <Info className="w-6 h-6 text-ford-performance shrink-0" />
             <div>
-              <h3 className="text-ford-performance font-bold text-sm uppercase mb-1">Engine Builder's Note</h3>
+              <h3 className="text-ford-performance font-bold text-sm uppercase mb-1">Parts Database Updated</h3>
               <p className="text-sm text-gray-400 leading-relaxed">
-                We've updated the tool with specific parts like AFR Renegades, Parker Funnelwebs, and Ford Letter cams. 
-                Select your specific hardware for a tighter estimation.
+                The database now includes AFR Enforcer, Trick Flow 11R, Coyote Gen 3, and Voodoo specific parts. 
+                Use the Snapshot button to compare your new build against your previous setup.
               </p>
             </div>
           </div>
